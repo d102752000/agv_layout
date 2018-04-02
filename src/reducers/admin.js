@@ -35,9 +35,23 @@ const admin = (state = {}, action) => {
         ...state,
         ...action,
       }
+    case actionTypes.DO_RACK_RETURN_REQUEST:
+    case actionTypes.DO_RACK_RETURN_SUCCESS:
+    case actionTypes.DO_RACK_RETURN_FAILURE:
+      return {
+        ...state,
+        ...action,
+      }
     case actionTypes.DO_IN_OUT_REQUEST:
     case actionTypes.DO_IN_OUT_SUCCESS:
     case actionTypes.DO_IN_OUT_FAILURE:
+      return {
+        ...state,
+        ...action,
+      }
+    case actionTypes.DO_LIST_RACK_REQUEST:
+    case actionTypes.DO_LIST_RACK_SUCCESS:
+    case actionTypes.DO_LIST_RACK_FAILURE:
       return {
         ...state,
         ...action,

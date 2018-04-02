@@ -2,7 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 // import D3 from 'd3';
 
-import car from '../images/car.png';
+import car from '../images/agv.png';
+import rack from '../images/rack.png';
+import carAndRack from '../images/agvAndRack.png';
 import mapConfig from './../constant/mapConfig';
 
 class AgvMap extends React.Component {
@@ -20,9 +22,10 @@ class AgvMap extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     // if (prevProps.mapConfig) this.setState({ preCarPosition: prevProps.mapConfig.car });
   }
-  drawMap = (configs, agvData) => {
+  drawMap = (configs, agvData, side) => {
     const wid = configs.width * configs.size;
     const hei = configs.height * configs.size;
+    const sideNumber = side === 'left' ? 0 : 1;
 
     const mapRoads = [];
     const carArrs = [];
@@ -34,7 +37,7 @@ class AgvMap extends React.Component {
         let strokeWidth = 3;
 
         // match the station blocks
-        _.each(configs.station, value => {
+        _.each(configs.station[sideNumber], value => {
           if( _.isEqual(value, [i, j])) {
             isStationMatch = true;
             return;
@@ -42,7 +45,7 @@ class AgvMap extends React.Component {
         });
 
         // match the ignore blocks
-        _.each(configs.ignoreBlocks, value => {
+        _.each(configs.ignoreBlocks[sideNumber], value => {
           if( _.isEqual(value, [i, j])) {
             isIgnoreBlocks = true;
             strokeWidth = 0;
@@ -63,12 +66,13 @@ class AgvMap extends React.Component {
         if (fillColor === '#2020529c') strokeWidth = 1;
         mapRoads.push(
           <rect
+            className="roadMap"
             x={i * configs.size}
             y={j * configs.size}
             key={`rect${i}-${j}`}
             width={configs.size}
             height={configs.size}
-            style={{ "fill": fillColor, "strokeWidth": strokeWidth, "stroke": "black" }}
+            style={{ "fill": fillColor, "strokeWidth": strokeWidth, "stroke": "black", webkitTransform: 'rotateX(30)' }}
           />
         );
       });
@@ -77,23 +81,51 @@ class AgvMap extends React.Component {
     // draw racks
     _.map(agvData.Table, (value, key) => {
       const rackLocation = value.Location.split('-'); // block-x-y
-      if (rackLocation[0] === '00') return;
 
-      mapRoads.push(
-        <rect
-          x={parseInt(rackLocation[1], 10) * configs.size}
-          y={parseInt(rackLocation[2], 10) * configs.size}
-          key={`rack${rackLocation[1]}-${rackLocation[2]}`}
-          width={configs.size}
-          height={configs.size}
-          style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
-        />
-      );
+      // <rect
+      //       x={parseInt(rackLocation[1], 10) * configs.size}
+      //       y={parseInt(rackLocation[2], 10) * configs.size}
+      //       key={`rack${rackLocation[1]}-${rackLocation[2]}`}
+      //       width={configs.size}
+      //       height={configs.size}
+      //       style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
+      //     />
+      if (parseInt(rackLocation[0], 10) === sideNumber) {
+        const xAxis = parseInt(rackLocation[1], 10);
+        const yAxis = parseInt(rackLocation[2], 10);
+        mapRoads.push(
+          <image
+            xlinkHref={rack}
+            x={105 + 73*xAxis - 55*yAxis}
+            y={0 + 14*xAxis + 30*yAxis}
+            height="80px"
+            width="80px"
+
+            key={value.Name}
+            style={{ zIndex: 3 }}
+          />
+        );
+      }
     });
 
     // draw agv's cars
     _.map(agvData.AGV, (value, key) => {
       const agvLocation = value.Location.split('-'); // block-x-y
+      if (parseInt(agvLocation[0], 10) === sideNumber) {
+        const xAxis = parseInt(agvLocation[1], 10);
+        const yAxis = parseInt(agvLocation[2], 10);
+        carArrs.push(
+          <image
+            xlinkHref={car}
+            x={120 + 73*xAxis - 55*yAxis}
+            y={35 + 14*xAxis + 30*yAxis}
+            height="50px"
+            width="50px"
+            key={value.Name}
+            style={{ zIndex: 1 }}
+          />
+        );
+      }
       // <animate
       //         attributeName="x"
       //         from={`${fromX - 10}`}
@@ -108,16 +140,6 @@ class AgvMap extends React.Component {
       //         dur="2s"
       //         repeatCount="indefinite"
       //       />
-      carArrs.push(
-        <image
-          xlinkHref={car}
-          x={agvLocation[1]*configs.size}
-          y={agvLocation[2]*configs.size}
-          height="65px"
-          width="65px"
-          key={value.Name}
-        />
-      );
     })
 
     // console.log('x: ', `${this.state.preCarPosition[0]*20}`, `${this.state.preCarPosition[1]*20}`)
@@ -129,7 +151,8 @@ class AgvMap extends React.Component {
 
     return (
       <div>
-        <svg width={wid} height={hei}>
+        <div style={{ height: '5vh' }} />
+        <svg width={600} height={500} style={{ paddingLeft: '135px' }}>
           {mapRoads}
           {carArrs}
           {/* <circle cx="10" cy="10" r="10" stroke="black" strokeWidth="4" fill="url(#this_image)"> */}
@@ -165,10 +188,11 @@ class AgvMap extends React.Component {
     );
   }
   render() {
-    const { data } = this.props;
+    const { data, side } = this.props;
+    // console.log(data);
     return (
       <div>
-        {data ? this.drawMap(mapConfig(), data) : ''}
+        {data ? this.drawMap(mapConfig(), data, side) : ''}
       </div>
     );
   }

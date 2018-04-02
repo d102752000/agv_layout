@@ -32,14 +32,14 @@ class BarChart extends React.PureComponent{
       const Stat = G2.Stat;
       chart.setMode('select'); // 开启框选模式
       chart.select('rangeX'); // 设置 X 轴范围的框选
-      chart.col('..count', {
+      chart.col('..quantity', {
         alias: 'top2000 唱片总量'
       });
       chart.col('release', {
         tickInterval: 5,
         alias: '唱片发行年份'
       });
-      chart.interval().position('name*count').color('#4c7cd4');
+      chart.interval().position('itemName*quantity').color('#4c7cd4');
       chart.render();
       // 监听双击事件，这里用于复原图表
       chart.on('plotdblclick', function(ev) {

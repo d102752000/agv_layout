@@ -3,6 +3,7 @@ import { Layout, Col, Row, Table, Progress, Card } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import io from 'socket.io-client';
+import { doInOutRequest } from './../../actions/index';
 
 import AgvMap from './../../component/AgvMap';
 import ItemsPieChart from './../../component/ItemsPieChart';
@@ -11,16 +12,16 @@ import BarChart from './../../component/BarChart';
 const { Header, Content } = Layout;
 
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
+  title: <h3 className="tableHeader">ItemName</h3>,
+  dataIndex: 'itemName',
   width: 200,
 }, {
-  title: 'Age',
-  dataIndex: 'age',
+  title: <h3 className="tableHeader">Quantity</h3>,
+  dataIndex: 'quantity',
   width: 200,
 }, {
-  title: 'Address',
-  dataIndex: 'address',
+  title: <h3 className="tableHeader">Location</h3>,
+  dataIndex: 'location',
   width: 200,
 }];
 const data = [{
@@ -81,11 +82,11 @@ class ChartFormContainer extends React.Component {
     this.state = {
       pieData :[
         {name: 'Microsoft Internet Explorer', value: 56.33 },
-        {name: 'Chrome', value: 24.03},
-        {name: 'Firefox', value: 10.38},
-        {name: 'Safari',  value: 4.77},
-        {name: 'Opera', value: 0.91},
-        {name: 'Proprietary or Undetectable', value: 0.2}
+        {name: 'Chrome', value: 224.03},
+        {name: 'Firefox', value: 110.38},
+        {name: 'Safari',  value: 42.77},
+        {name: 'Opera', value: 220.91},
+        {name: 'Proprietary or Undetectable', value: 50.2}
       ],
       barData :[
         {name: 'item1', count: 2},
@@ -97,19 +98,115 @@ class ChartFormContainer extends React.Component {
         {name: 'item7', count: 7},
         {name: 'item8', count: 10},
       ],
-      socket: io('http://192.168.1.131:5002'),
-      realtimeData: {},
+      socket: io('http://192.168.1.134:5002'),
+      realtimeData: {
+        "AGV": [
+          {
+            "Name": "AGV001",
+            "IP": "10.5.87.10",
+            "Location": "01-002-004",
+            "Firmware": "0.0.0.1",
+            "Status": "Idle",
+            "Face": "Up",
+            "Battery": "100",
+            "Servicetime": "21:22:11",
+            "Speed": "60",
+            "Work_mileage": "999999",
+            "Route": [
+              "00-001-002",
+              "00-001-003"
+            ],
+            "TableName": "RACK001",
+            "TableFace": "Down",
+            "CreateTime": "2018-02-28 12:00:00"
+          }
+        ],
+        "Table": [
+          {
+            "Name": "RACK002",
+            "Location": "01-002-003",
+            "Face": "Down"
+          }
+        ]
+      },
+      realTimeStatic: {},
     }
     this.combineSocketToState = this.combineSocketToState.bind(this);
+    this.combineSocketStaticsToState = this.combineSocketStaticsToState.bind(this);
+    this.processTableData = this.processTableData.bind(this);
+
+    const { doInOutRequest } = this.props;
+    doInOutRequest({
+      type: 'inRequests',
+
+    })
   }
   componentDidMount() {
     this.state.socket.on('realtime', this.combineSocketToState);
+    this.state.socket.on('wareHouseStatus', this.combineSocketStaticsToState);
   }
   combineSocketToState = (value) => {
     // console.log(value);
     this.setState({ realtimeData: value });
   }
+  combineSocketStaticsToState = (value) => {
+    console.log(value);
+    const side = this.props.match.params.side;
+    if (side === 'left') { this.setState({ realTimeStatic: value.materialsWareHouse }); }
+    else if (side === 'right') { this.setState({ realTimeStatic: value.itemsWareHouse }); }
+  }
+  processTableData = (data) => {
+    const tableData = [];
+    const colKey = 0;
+    _.map(data, (rack) => {
+      _.map(rack.items, (item) => {
+        _.map(item.positions, (value) => {
+          const obj = {};
+          obj.location = `${rack.rackName} ${item.positions.position}`;
+          obj.quantity = item.positions.quantity;
+          obj.itemName = item.itemName;
+          tableData.push(obj);
+        });
+      });
+    });
+    return tableData;
+  }
   render() {
+    // console.log(this.state.realTimeStatic);
+    const { realtimeData, realTimeStatic } = this.state;
+    // different card one and three at left monitor or right monitor
+    const side = this.props.match.params.side;
+    const cardOne = [];
+    const cardThree = [];
+    if (side === 'right') {
+      cardOne.push(<Card title="AGV's RealTime"  className="carAnimate">
+        <AgvMap data={realtimeData} side={side} /></Card>);
+      cardThree.push(<Card title="Warehouse Usage Ratio" className="upperRowCard">
+      <div style={{ height: '5vh' }} />
+        <div style={{ textAlign: 'center' }}>
+          <Progress
+            type="dashboard"
+            percent={realTimeStatic.wareHouseUsage}
+            width={300}
+            className="progressChart"
+          />
+        </div>
+      </Card>);
+    } else if (side === 'left') {
+      cardThree.push(<Card title="AGV's RealTime"  className="carAnimate">
+        <AgvMap data={realtimeData} side={side}/></Card>);
+      cardOne.push(<Card title="Warehouse Usage Ratio" className="upperRowCard">
+      <div style={{ height: '5vh' }} />
+        <div style={{ textAlign: 'center' }}>
+          <Progress
+            type="dashboard"
+            percent={realTimeStatic.wareHouseUsage}
+            width={300}
+            className="progressChart"
+          />
+        </div>
+      </Card>);
+    }
     return (
       <Layout id="chartForm-container">
         <Header className="header">
@@ -119,7 +216,7 @@ class ChartFormContainer extends React.Component {
               <b className="titleWords">Auto Guided Vehicle</b>
             </Col>
             <Col span={16} style={{ textAlign: 'center' }}>
-              <h3 className="titleWords">Statics</h3>
+              <h1 className="titleWords">Statics</h1>
             </Col>
             <Col span={4}>
               <h3
@@ -132,48 +229,41 @@ class ChartFormContainer extends React.Component {
           </Row>
         </Header>
         <Layout>
-          <Layout style={{ padding: '24px 24px 24px' }}>
+          <Layout id="chartForm-layout">
             <Content className="content">
               <Row>
                 <Col span={8}>
-                  <Card title="AGV's RealTime"  className="carAnimate">
-                    <AgvMap data={this.state.realtimeData} />
-                  </Card>
+                  {cardOne}
                 </Col>
                 <Col span={8}>
                   <Card title="Items Flow Ratio" className="upperRowCard">
-                    <ItemsPieChart data={this.state.pieData} />
+                    <ItemsPieChart data={realTimeStatic.flowRate} />
                   </Card>
                 </Col>
                 <Col span={8}>
-                  <Card title="Warehouse Usage Ratio" className="upperRowCard">
-                    <Progress
-                      type="dashboard"
-                      percent={75}
-                      width={250}
-                      className="progressChart"
-                    />
-                  </Card>
+                  {cardThree}
                 </Col>
+                </Row>
                 <Row>
                 <Col span={8}>
                   <Card title="Items Quantity Ratio" className="upperRowCard">
                     <BarChart
-                      data={this.state.barData}
+                      data={realTimeStatic.totalItems}
                     />
                   </Card>
                 </Col>
                 <Col span={16}>
+                <Card className="upperRowCard lowerRowTableCard">
                   <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={this.processTableData(realTimeStatic.itemDistributions)}
                     pagination={false}
-                    scroll={{ y : '330px' }}
+                    scroll={{ y : '37vh' }}
                     size="middle"
                   />
+                  </Card>
                 </Col>
                 </Row>
-              </Row>
             </Content>
           </Layout>
         </Layout>
@@ -182,4 +272,13 @@ class ChartFormContainer extends React.Component {
   }
 }
 
-export default ChartFormContainer;
+const mapStateToProps = (state) => {
+  return {
+    ...state.admin,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { doInOutRequest }
+)(ChartFormContainer);

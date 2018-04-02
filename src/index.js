@@ -4,8 +4,10 @@ import { Provider } from 'react-redux';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
 import configureStore from './store/configureStore';
-import ListAgvInfo from './containers/ListAgvInfo';
+import HomepageContainer from './containers/HomepageContainer';
 import registerServiceWorker from './registerServiceWorker';
+import ListAgvInfoContainer from './containers/ListAgvInfoContainer';
+import LoginFormContainer from './containers/LoginFormContainer';
 import ChartFormContainer from './containers/statics/ChartFormContainer';
 
 import 'animate.css/animate.css';
@@ -18,8 +20,9 @@ const routerSet = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact component={ListAgvInfo} />
-        <Route path="/statics" component={ChartFormContainer} exact />
+        <Route path="/" exact component={ListAgvInfoContainer} />
+        <Route path="/admin" component={HomepageContainer} exact />
+        <Route path="/statics/:side" component={ChartFormContainer} exact />
       </Switch>
     </BrowserRouter>
   );

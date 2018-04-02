@@ -7,70 +7,38 @@ import ReactSpeedometer from "react-d3-speedometer";
 const { Content } = Layout;
 const { Meta } = Card;
 
-const data = [
-  {
-    agvname: 'AGV001',
-    ip: '10.5.87.10',
-    locatuon: '00-001-002',
-    fireware: '0.0.0.1',
-    status: 'Idle',
-    face: 'Up',
-    battery: '80',
-    servicetime: '21:22:11',
-    workmileage: '999999',
-    speed: '20',
-    rackname:'Rack002',
-    racklocatuon: '00-001-002',
-    rackface:'Up',
-  },
-  {
-    agvname: 'AGV002',
-    ip: '10.5.87.10',
-    locatuon: '00-001-002',
-    fireware: '0.0.0.1',
-    status: 'Idle',
-    face: 'Down',
-    battery: '40',
-    servicetime: '21:22:11',
-    workmileage: '999999',
-    speed: '60',
-    rackname:'Rack002',
-    racklocatuon: '00-001-002',
-    rackface:'Up',
-  },
-  {
-    agvname: 'AGV003',
-    ip: '10.5.87.10',
-    locatuon: '00-001-002',
-    fireware: '0.0.0.1',
-    status: 'Idle',
-    face: 'Right',
-    battery: '98',
-    servicetime: '21:22:11',
-    workmileage: '999999',
-    speed: '80',
-    rackname:'Rack002',
-    racklocatuon: '00-001-002',
-    rackface:'Up',
-  },
-  {
-    agvname: 'AGV004',
-    ip: '10.5.87.10',
-    locatuon: '00-001-002',
-    fireware: '0.0.0.1',
-    status: 'Idle',
-    face: 'Left',
-    battery: '30',
-    servicetime: '21:22:11',
-    workmileage: '999999',
-    speed: '40',
-    rackname:'Rack002',
-    racklocatuon: '00-001-002',
-    rackface:'Up',
-  },
-];
+const data = {
+  "AGV": [
+    {
+      "Name": "AGV001",
+      "IP": "10.5.87.10",
+      "Location": "01-002-004",
+      "Firmware": "0.0.0.1",
+      "Status": "Idle",
+      "Face": "Up",
+      "Battery": "100",
+      "Servicetime": "21:22:11",
+      "Speed": "60",
+      "Work_mileage": "999999",
+      "Route": [
+        "00-001-002",
+        "00-001-003"
+      ],
+      "TableName": "RACK001",
+      "TableFace": "Down",
+      "CreateTime": "2018-02-28 12:00:00"
+    }
+  ],
+  "Table": [
+    {
+      "Name": "RACK002",
+      "Location": "01-002-003",
+      "Face": "Down"
+    }
+  ]
+};
 
-class ChartFormContainer extends React.Component {
+class ListAgvInfoContainer extends React.Component {
 
   render() {
     return (
@@ -83,18 +51,19 @@ class ChartFormContainer extends React.Component {
                 dataSource={data}
                 renderItem={item => (
                   <List.Item>
+                    console.log(item);
                     <Card
-                    title={item.agvname}
+                    title={item.AGV[0].Name}
                     >
-                      <p>Locatuon:{item.locatuon}</p>
-                      <p>Fireware:{item.fireware}</p>
-                      <p>Status:{item.status}</p>
+                      <p>Locatuon:{item.AGV[0].Location}</p>
+                      <p>Fireware:{item.AGV[0].Firmware}</p>
+                      <p>Status:{item.AGV[0].Status}</p>
                       <p>Face:
                         <Avatar
                           shape="square"
                           size="large"
                           style={{ left: '5px' }}
-                          icon={`${item.face.toLowerCase()}-circle`}
+                          icon={`${item.AGV.Face.toLowerCase()}-circle`}
                         />
                       </p>
                       <p>Servicetime:{item.servicetime}</p>
@@ -138,4 +107,4 @@ class ChartFormContainer extends React.Component {
   }
 }
 
-export default ChartFormContainer;
+export default ListAgvInfoContainer;

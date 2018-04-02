@@ -1,6 +1,12 @@
 #chartForm-container {
+  height: 100vh;
   .titleWords {
     color: white;
+    font-weight: 900;
+  }
+  #chartForm-layout {
+    padding: 22px 22px 22px;
+    background-color: #d0d2d4;
   }
   .logoutStyle {
     text-align: right;
@@ -12,7 +18,14 @@
     height: 89vh;
     .carAnimate {
       text-align: center;
-      height: 50vh;
+      height: 45vh;
+    }
+    .ant-card-head {
+      background: #6b6666;
+      .ant-card-head-title {
+        color: white;
+        text-align: center;
+      }
     }
     .progressChart {
       .ant-progress-circle-path {
@@ -20,7 +33,16 @@
       }
     }
     .upperRowCard {
-      height: 50vh;
+      height: 45vh;
     }
+    .lowerRowTableCard {
+      .ant-card-body {
+        padding: 10px;
+      }
+    }
+  }
+  .roadMap {
+    transform: perspective(320px) rotateX(35deg) rotateY(8deg) rotateZ(6deg);
+    transform-origin: 80% 40%;
   }
 }

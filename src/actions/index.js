@@ -7,7 +7,7 @@ import _ from 'lodash';
 const serverConfig = {
   // url: 'http://lmsr178.calcomp.co.th:5001/apis',
   // url: 'http://127.0.0.1:5001/apis',
-  url: 'http://192.168.1.150:5001/apis',
+  url: 'http://192.168.1.134:5001/apis',
 };
 
 const checkStatus = (response) => {
@@ -30,6 +30,7 @@ export const fakeMapConfig = (passProps) => {
 }
 
 export const doLoginRequest = (passProps) => {
+  console.log(passProps);
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_LOGIN_REQUEST,
@@ -57,13 +58,13 @@ export const doLoginRequest = (passProps) => {
 }
 
 export const doRackArrivalRequest = (passProps) => {
-  console.log(passProps);
+  console.log(passProps, passProps.currentStockUuid);
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_RACK_ARRIVAL_REQUEST,
     });
     fetch(`${serverConfig.url}/v1/auth/list/rackArrival/`
-      + `${passProps.stockUuid}?stationIdentifier=${passProps.stationIdentifier}`, {
+      + `${passProps.currentStockUuid}?stationIdentifier=${passProps.currentStationUuid}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -75,6 +76,8 @@ export const doRackArrivalRequest = (passProps) => {
     .then((data) => {
       const stockName = data.rackTask.rack.stock.stockName;
       const rackUuid = data.rackTask.rack.uuid;
+      const rackName = data.rackTask.rack.rackName;
+      const stationId = data.rackTask.rackRequests[0].stationIdentifier || '';
 
       // items on Rack
       const itemsOnRack = [];
@@ -115,10 +118,12 @@ export const doRackArrivalRequest = (passProps) => {
       dispatch({
         type: actionTypes.DO_RACK_ARRIVAL_SUCCESS,
         rackData: {
+          rackName,
           stockName,
           rackUuid,
           itemsOnRack,
           tasksOnRack,
+          stationId,
         }
       });
     })
@@ -163,6 +168,7 @@ export const doRackRequest = (passProps) => {
 }
 
 export const doTurnRackRequest = (passProps) => {
+  console.log('rotate: ', passProps);
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_TURN_RACK_REQUEST,
@@ -180,7 +186,7 @@ export const doTurnRackRequest = (passProps) => {
     .then((data) => {
       dispatch({
         type: actionTypes.DO_TURN_RACK_SUCCESS,
-        success: data.success,
+        turnSuccess: data.success,
       });
     })
     .catch((err) => {
@@ -192,8 +198,40 @@ export const doTurnRackRequest = (passProps) => {
   }
 }
 
+export const doRackReturnRequest = (passProps) => {
+  console.log('return: ', passProps);
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.DO_RACK_RETURN_REQUEST,
+    });
+    fetch(`${serverConfig.url}/v1/auth/returnRack`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "wms-access-token": passProps.token,
+      },
+      body: JSON.stringify(passProps.returnRack)
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then((data) => {
+      dispatch({
+        type: actionTypes.DO_RACK_RETURN_SUCCESS,
+        returnSuccess: data.success,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: actionTypes.DO_RACK_RETURN_FAILURE,
+        message: err,
+      });
+    });
+  }
+}
+
 export const doInOutRequest = (passProps) => {
   const requestType = passProps.type === 'in' ? 'inRequests' : 'outRequests';
+  console.log('doInOutRequest: ', passProps);
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_IN_OUT_REQUEST,
@@ -246,6 +284,45 @@ export const doListItemRequest = (passProps) => {
     .catch((err) => {
       dispatch({
         type: actionTypes.DO_LIST_ITEM_FAILURE,
+        message: err,
+      });
+    });
+  }
+}
+
+export const doListRackRequest = (passProps) => {
+  console.log(passProps);
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.DO_LIST_RACK_REQUEST,
+    });
+    fetch(`${serverConfig.url}/v1/auth/list/racks`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "wms-access-token": passProps.token
+      },
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then((data) => {
+      const racksArrs = [];
+      _.map(data.racks, (value, key) => {
+        if (passProps.currentStockUuid === value.stock.uuid) {
+          const obj = {};
+          obj.rackName = value.rackName;
+          obj.rackUuid = value.uuid;
+          racksArrs.push(obj);
+        }
+      });
+      dispatch({
+        type: actionTypes.DO_LIST_RACK_SUCCESS,
+        racksIdInfo: racksArrs,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: actionTypes.DO_LIST_RACK_FAILURE,
         message: err,
       });
     });
