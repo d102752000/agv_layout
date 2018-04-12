@@ -3,7 +3,7 @@ import _ from 'lodash';
 // import D3 from 'd3';
 
 import car from '../images/agv.png';
-import rack from '../images/rack.png';
+import rack from '../images/rack1.png';
 import carAndRack from '../images/agvAndRack.png';
 import mapConfig from './../constant/mapConfig';
 
@@ -31,7 +31,7 @@ class AgvMap extends React.Component {
     const carArrs = [];
     _.times(configs.width, (i) => {
       _.times(configs.height, (j) => {
-        let fillColor = "#2020529c";
+        let fillColor = "#ffff99";
         let isStationMatch = false;
         let isIgnoreBlocks = false;
         let strokeWidth = 3;
@@ -54,7 +54,7 @@ class AgvMap extends React.Component {
         });
 
         // determine rect type and color
-        if (isStationMatch) fillColor = "red";
+        if (isStationMatch) fillColor = "#6666ff";
         // else if (i === configs.car[0] && j === configs.car[1]) fillColor = "green";
         else if (isIgnoreBlocks) fillColor = "white";
         // else {
@@ -63,7 +63,7 @@ class AgvMap extends React.Component {
         //   });
         // }
 
-        if (fillColor === '#2020529c') strokeWidth = 1;
+        if (fillColor === '#ffff99') strokeWidth = 1;
         mapRoads.push(
           <rect
             className="roadMap"
@@ -151,7 +151,6 @@ class AgvMap extends React.Component {
 
     return (
       <div>
-        <div style={{ height: '5vh' }} />
         <svg width={600} height={500} style={{ paddingLeft: '135px' }}>
           {mapRoads}
           {carArrs}

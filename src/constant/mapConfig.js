@@ -1,10 +1,14 @@
 // import _ from 'lodash';
 
 const mapConfig = () => {
-  let ignoreBlocks = [
+  let ignoreBlocks = [/*
     [[3, 2], [3, 3], [3, 4], [2, 4]],
-    [[0, 2], [0, 3], [0, 4], [1, 4]],
+    [[0, 2], [0, 3], [0, 4], [1, 4]],*/
   ];
+  // let ignoreBlocks = [
+  //   [[3, 2], [3, 3], [3, 4], [2, 4]],
+  //   [[0, 2], [0, 3], [0, 4], [1, 4]],
+  // ];
 
   // compare is point same as ignore blocks or not
   // const comparePoints = (ignore) => {
