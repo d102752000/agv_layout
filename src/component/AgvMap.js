@@ -3,7 +3,7 @@ import _ from 'lodash';
 // import D3 from 'd3';
 
 import car from '../images/agv.png';
-import rack from '../images/rack1.png';
+import rack from '../images/rack.png';
 import carAndRack from '../images/agvAndRack.png';
 import mapConfig from './../constant/mapConfig';
 
@@ -34,6 +34,8 @@ class AgvMap extends React.Component {
         let fillColor = "#ffff99";
         let isStationMatch = false;
         let isIgnoreBlocks = false;
+        let isMaterialAndFinishBlocks = false;
+        let isBetteryCharging = false;
         let strokeWidth = 3;
 
         // match the station blocks
@@ -52,18 +54,32 @@ class AgvMap extends React.Component {
             return;
           }
         });
-
+        _.each(configs.materialAndFinishBlocks[sideNumber], value => {
+          if( _.isEqual(value, [i, j])) {
+            isMaterialAndFinishBlocks = true;
+            return;
+          }
+        });//materialAndFinishBlocks
+        _.each(configs.betteryChargingArea[sideNumber], value => {
+          if( _.isEqual(value, [i, j])) {
+            isBetteryCharging = true;
+            return;
+          }
+        });
         // determine rect type and color
-        if (isStationMatch) fillColor = "#6666ff";
-        // else if (i === configs.car[0] && j === configs.car[1]) fillColor = "green";
+        if (isStationMatch) fillColor = "#d5ff80";
+        else if (isBetteryCharging) fillColor = "#ffb3d9";
+        else if (isMaterialAndFinishBlocks) fillColor =
+        (sideNumber === 0 ? "#cceeff" : "#0088cc");
         else if (isIgnoreBlocks) fillColor = "white";
+        // else if (i === configs.car[0] && j === configs.car[1]) fillColor = "green";
         // else {
         //   _.filter(configs.rack, (component) => {
         //     if(component[0] === i && component[1] === j) fillColor = "yellow";
         //   });
         // }
 
-        if (fillColor === '#ffff99') strokeWidth = 1;
+        if (fillColor === '#d5ff80') strokeWidth = 1;
         mapRoads.push(
           <rect
             className="roadMap"
@@ -81,30 +97,29 @@ class AgvMap extends React.Component {
     // draw racks
     _.map(agvData.Table, (value, key) => {
       const rackLocation = value.Location.split('-'); // block-x-y
-
-      // <rect
-      //       x={parseInt(rackLocation[1], 10) * configs.size}
-      //       y={parseInt(rackLocation[2], 10) * configs.size}
-      //       key={`rack${rackLocation[1]}-${rackLocation[2]}`}
-      //       width={configs.size}
-      //       height={configs.size}
-      //       style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
-      //     />
       if (parseInt(rackLocation[0], 10) === sideNumber) {
         const xAxis = parseInt(rackLocation[1], 10);
         const yAxis = parseInt(rackLocation[2], 10);
-        mapRoads.push(
-          <image
-            xlinkHref={rack}
-            x={105 + 73*xAxis - 55*yAxis}
-            y={0 + 14*xAxis + 30*yAxis}
-            height="80px"
-            width="80px"
+          mapRoads.push(
+            <image
+              xlinkHref={rack}
+              x={105 + 73*xAxis - 55*yAxis}
+              y={0 + 14*xAxis + 30*yAxis}
+              height="80px"
+              width="80px"
 
-            key={value.Name}
-            style={{ zIndex: 3 }}
-          />
-        );
+              key={value.Name}
+            />
+          );
+
+          // <rect
+          //       x={parseInt(rackLocation[1], 10) * configs.size}
+          //       y={parseInt(rackLocation[2], 10) * configs.size}
+          //       key={`rack${rackLocation[1]}-${rackLocation[2]}`}
+          //       width={configs.size}
+          //       height={configs.size}
+          //       style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
+          //     />
       }
     });
 
@@ -122,7 +137,6 @@ class AgvMap extends React.Component {
             height="50px"
             width="50px"
             key={value.Name}
-            style={{ zIndex: 1 }}
           />
         );
       }

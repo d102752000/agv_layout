@@ -7,9 +7,9 @@ import _ from 'lodash';
 const serverConfig = {
   // url: 'http://lmsr178.calcomp.co.th:5001/apis',
   // url: 'http://127.0.0.1:5001/apis',
-  url: 'http://192.168.1.134:5001/apis',
+  url: 'http://192.168.1.132:5001/apis',
 };
-
+//exhibitionadmin
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) return response;
 
@@ -262,11 +262,12 @@ export const doInOutRequest = (passProps) => {
 }
 
 export const doListItemRequest = (passProps) => {
+  const tableData = [];
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_LIST_ITEM_REQUEST,
     });
-    fetch(`${serverConfig.url}/v1/auth/auth/list/items?itemName=${passProps.itemName}`, {
+    fetch(`${serverConfig.url}/v1/auth/list/itemDistributions`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -276,9 +277,21 @@ export const doListItemRequest = (passProps) => {
     .then(checkStatus)
     .then(parseJSON)
     .then((data) => {
+      // console.log(data.racks);
+    for(let i = 0; i<_.size(data.racks); i++) {
+      for(let j = 0; j< _.size(data.racks[i].items); j++) {
+        _.map(data.racks[i].items[j].positions, (value) => {
+              tableData.push({
+                rackname: data.racks[i].rackName,
+                quantity: value.quantity,
+                location: value.position,
+              });
+            });
+        }
+      }
       dispatch({
         type: actionTypes.DO_LIST_ITEM_SUCCESS,
-        itemInfo: data,
+        itemInfo: tableData,
       });
     })
     .catch((err) => {
@@ -291,7 +304,6 @@ export const doListItemRequest = (passProps) => {
 }
 
 export const doListRackRequest = (passProps) => {
-  console.log(passProps);
   return (dispatch) => {
     dispatch({
       type: actionTypes.DO_LIST_RACK_REQUEST,
@@ -309,6 +321,11 @@ export const doListRackRequest = (passProps) => {
       const racksArrs = [];
       _.map(data.racks, (value, key) => {
         if (passProps.currentStockUuid === value.stock.uuid) {
+          const obj = {};
+          obj.rackName = value.rackName;
+          obj.rackUuid = value.uuid;
+          racksArrs.push(obj);
+        } else {
           const obj = {};
           obj.rackName = value.rackName;
           obj.rackUuid = value.uuid;

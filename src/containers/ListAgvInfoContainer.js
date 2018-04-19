@@ -17,7 +17,7 @@ class ListAgvInfoContainer extends React.Component {
           {
             "Name": "AGV001",
             "IP": "10.5.87.10",
-            "Location": "01-002-004",
+            "Location": "00-001-002",
             "Firmware": "0.0.0.1",
             "Status": "Idle",
             "Face": "Up",
@@ -35,7 +35,7 @@ class ListAgvInfoContainer extends React.Component {
           }, {
             "Name": "AGV002",
             "IP": "10.5.87.10",
-            "Location": "01-002-004",
+            "Location": "00-001-000",
             "Firmware": "0.0.0.1",
             "Status": "Idle",
             "Face": "Up",
@@ -53,79 +53,7 @@ class ListAgvInfoContainer extends React.Component {
           }, {
             "Name": "AGV003",
             "IP": "10.5.87.10",
-            "Location": "01-002-004",
-            "Firmware": "0.0.0.1",
-            "Status": "Idle",
-            "Face": "Up",
-            "Battery": "50",
-            "Servicetime": "21:22:11",
-            "Speed": "20",
-            "Work_mileage": "999999",
-            "Route": [
-              "00-001-002",
-              "00-001-003"
-            ],
-            "TableName": "RACK001",
-            "TableFace": "Down",
-            "CreateTime": "2018-02-28 12:00:00"
-          }, {
-            "Name": "AGV004",
-            "IP": "10.5.87.10",
-            "Location": "01-002-004",
-            "Firmware": "0.0.0.1",
-            "Status": "Idle",
-            "Face": "Up",
-            "Battery": "50",
-            "Servicetime": "21:22:11",
-            "Speed": "20",
-            "Work_mileage": "999999",
-            "Route": [
-              "00-001-002",
-              "00-001-003"
-            ],
-            "TableName": "RACK001",
-            "TableFace": "Down",
-            "CreateTime": "2018-02-28 12:00:00"
-          }, {
-            "Name": "AGV005",
-            "IP": "10.5.87.10",
-            "Location": "01-002-004",
-            "Firmware": "0.0.0.1",
-            "Status": "Idle",
-            "Face": "Up",
-            "Battery": "50",
-            "Servicetime": "21:22:11",
-            "Speed": "20",
-            "Work_mileage": "999999",
-            "Route": [
-              "00-001-002",
-              "00-001-003"
-            ],
-            "TableName": "RACK001",
-            "TableFace": "Down",
-            "CreateTime": "2018-02-28 12:00:00"
-          }, {
-            "Name": "AGV006",
-            "IP": "10.5.87.10",
-            "Location": "01-002-004",
-            "Firmware": "0.0.0.1",
-            "Status": "Idle",
-            "Face": "Up",
-            "Battery": "50",
-            "Servicetime": "21:22:11",
-            "Speed": "20",
-            "Work_mileage": "999999",
-            "Route": [
-              "00-001-002",
-              "00-001-003"
-            ],
-            "TableName": "RACK001",
-            "TableFace": "Down",
-            "CreateTime": "2018-02-28 12:00:00"
-          }, {
-            "Name": "AGV007",
-            "IP": "10.5.87.10",
-            "Location": "01-002-004",
+            "Location": "01-003-000",
             "Firmware": "0.0.0.1",
             "Status": "Idle",
             "Face": "Up",
@@ -143,11 +71,14 @@ class ListAgvInfoContainer extends React.Component {
           }
         ],
         "Table": [
-          {
-            "Name": "RACK002",
-            "Location": "01-002-003",
-            "Face": "Down"
-          }
+          {Name: "RACK001", Location: "00-001-000", Face: "Right"},
+          {Name: "RACK002", Location: "00-001-002", Face: "Right"},
+          {Name: "RACK003", Location: "00-002-000", Face: "Right"},
+          {Name: "RACK008", Location: "01-001-000", Face: "Right"},
+          {Name: "RACK009", Location: "01-003-000", Face: "Right"},
+          {Name: "RACK004", Location: "00-000-002", Face: "Up"},
+          {Name: "RACK010", Location: "01-002-002", Face: "Up"},
+          {Name: "RACK007", Location: "01-002-000", Face: "Right"},
         ]
       },
       realTimeStatic: {},
@@ -173,6 +104,16 @@ class ListAgvInfoContainer extends React.Component {
   render() {
     const { realtimeData } = this.state;
     console.log(realtimeData.AGV);
+    const settings = {
+      className: "center",
+      centerMode: true,
+      infinite: true,
+      centerPadding: "60px",
+      slidesToShow: 3,
+      speed: 500,
+      rows: 2,
+      slidesPerRow: 2
+    };
     return (
       <Layout id="homepage-container">
         <Layout>
@@ -184,6 +125,8 @@ class ListAgvInfoContainer extends React.Component {
                     grid={{ gutter: 16, column: 4 }}
                     dataSource={realtimeData.AGV}
                     renderItem={item => (
+                      <Slider {...settings}>
+                      <div>
                       <List.Item>
                         <Card
                         title={item.Name}
@@ -216,6 +159,8 @@ class ListAgvInfoContainer extends React.Component {
                             />
                         </Card>
                       </List.Item>
+                      </div>
+                      </Slider>
                     )}
                   />
                 </Col>

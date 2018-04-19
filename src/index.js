@@ -5,6 +5,8 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
 import configureStore from './store/configureStore';
 import registerServiceWorker from './registerServiceWorker';
+import LoginFormContainer from './containers/LoginFormContainer';
+import HomepageContainer from './containers/HomepageContainer';
 import ListAgvInfoContainer from './containers/ListAgvInfoContainer';
 import RealTimeFormContainer from './containers/RealTimeFormContainer';
 
@@ -18,6 +20,8 @@ const routerSet = () => {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/" exact component={LoginFormContainer}/>
+        <Route path="/admin" exact component={HomepageContainer}/>
         <Route path="/status" component={ListAgvInfoContainer} exact />
         <Route path="/realtime" component={RealTimeFormContainer} exact />
       </Switch>
