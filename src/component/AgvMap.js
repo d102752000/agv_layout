@@ -93,39 +93,37 @@ class AgvMap extends React.Component {
         );
       });
     })
+    const tabledata = [];
+    const agvdata = [];
+    _.map(agvData.Table, (value) => {
+        tabledata.push(value.Location);
+      });
+    _.map(agvData.AGV, (value) => {
+        agvdata.push(value.Location);
+      });
+    console.log(_.difference(tabledata, agvdata));
+    console.log(_.difference(agvdata, _.difference(tabledata, agvdata)));
+    console.log(_.difference(agvdata, _.difference(tabledata, _.difference(tabledata, agvdata))));
 
-    // draw racks
-    _.map(agvData.Table, (value, key) => {
-      const rackLocation = value.Location.split('-'); // block-x-y
+    _.map(_.difference(tabledata, agvdata), (value) => {
+      const rackLocation = value.split('-'); // block-x-y
       if (parseInt(rackLocation[0], 10) === sideNumber) {
         const xAxis = parseInt(rackLocation[1], 10);
         const yAxis = parseInt(rackLocation[2], 10);
-          mapRoads.push(
+        mapRoads.push(
             <image
               xlinkHref={rack}
               x={105 + 73*xAxis - 55*yAxis}
               y={0 + 14*xAxis + 30*yAxis}
               height="80px"
               width="80px"
-
-              key={value.Name}
             />
           );
-
-          // <rect
-          //       x={parseInt(rackLocation[1], 10) * configs.size}
-          //       y={parseInt(rackLocation[2], 10) * configs.size}
-          //       key={`rack${rackLocation[1]}-${rackLocation[2]}`}
-          //       width={configs.size}
-          //       height={configs.size}
-          //       style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
-          //     />
       }
     });
-
     // draw agv's cars
-    _.map(agvData.AGV, (value, key) => {
-      const agvLocation = value.Location.split('-'); // block-x-y
+    _.map(_.difference(agvdata, _.difference(tabledata, _.difference(tabledata, agvdata))), (value) => {
+      const agvLocation = value.split('-'); // block-x-y
       if (parseInt(agvLocation[0], 10) === sideNumber) {
         const xAxis = parseInt(agvLocation[1], 10);
         const yAxis = parseInt(agvLocation[2], 10);
@@ -140,21 +138,84 @@ class AgvMap extends React.Component {
           />
         );
       }
-      // <animate
-      //         attributeName="x"
-      //         from={`${fromX - 10}`}
-      //         to={`${toX - 10}`}
-      //         dur="2s"
-      //         repeatCount="indefinite"
-      //       />
-      //       <animate
-      //         attributeName="y"
-      //         from={`${fromY}`}
-      //         to={`${toY}`}
-      //         dur="2s"
-      //         repeatCount="indefinite"
-      //       />
     })
+    _.map(_.difference(tabledata, _.difference(tabledata, agvdata)), (value) => {
+      const agvLocation = value.split('-'); // block-x-y
+      if (parseInt(agvLocation[0], 10) === sideNumber) {
+        const xAxis = parseInt(agvLocation[1], 10);
+        const yAxis = parseInt(agvLocation[2], 10);
+        carArrs.push(
+          <image
+            xlinkHref={carAndRack}
+            x={105 + 73*xAxis - 55*yAxis}
+            y={0 + 14*xAxis + 30*yAxis}
+            height="80px"
+            width="80px"
+          />
+        );
+      }
+    })
+    // // draw racks
+    // _.map(agvData.Table, (value, key) => {
+    //   const rackLocation = value.Location.split('-'); // block-x-y
+    //   if (parseInt(rackLocation[0], 10) === sideNumber) {
+    //     const xAxis = parseInt(rackLocation[1], 10);
+    //     const yAxis = parseInt(rackLocation[2], 10);
+    //     mapRoads.push(
+    //         <image
+    //           xlinkHref={rack}
+    //           x={105 + 73*xAxis - 55*yAxis}
+    //           y={0 + 14*xAxis + 30*yAxis}
+    //           height="80px"
+    //           width="80px"
+    //
+    //           key={value.Name}
+    //         />
+    //       );
+    //
+    //       // <rect
+    //       //       x={parseInt(rackLocation[1], 10) * configs.size}
+    //       //       y={parseInt(rackLocation[2], 10) * configs.size}
+    //       //       key={`rack${rackLocation[1]}-${rackLocation[2]}`}
+    //       //       width={configs.size}
+    //       //       height={configs.size}
+    //       //       style={{ "fill": 'yellow', "strokeWidth": 3, "stroke": "black" }}
+    //       //     />
+    //   }
+    // });
+    //
+    // // draw agv's cars
+    // _.map(agvData.AGV, (value, key) => {
+    //   const agvLocation = value.Location.split('-'); // block-x-y
+    //   if (parseInt(agvLocation[0], 10) === sideNumber) {
+    //     const xAxis = parseInt(agvLocation[1], 10);
+    //     const yAxis = parseInt(agvLocation[2], 10);
+    //     carArrs.push(
+    //       <image
+    //         xlinkHref={car}
+    //         x={120 + 73*xAxis - 55*yAxis}
+    //         y={35 + 14*xAxis + 30*yAxis}
+    //         height="50px"
+    //         width="50px"
+    //         key={value.Name}
+    //       />
+    //     );
+    //   }
+    //   // <animate
+    //   //         attributeName="x"
+    //   //         from={`${fromX - 10}`}
+    //   //         to={`${toX - 10}`}
+    //   //         dur="2s"
+    //   //         repeatCount="indefinite"
+    //   //       />
+    //   //       <animate
+    //   //         attributeName="y"
+    //   //         from={`${fromY}`}
+    //   //         to={`${toY}`}
+    //   //         dur="2s"
+    //   //         repeatCount="indefinite"
+    //   //       />
+    // })
 
     // console.log('x: ', `${this.state.preCarPosition[0]*20}`, `${this.state.preCarPosition[1]*20}`)
     // console.log('y: ', `${this.props.mapConfig.car[0]*20}`, `${this.props.mapConfig.car[1]*20}`)

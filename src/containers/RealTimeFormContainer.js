@@ -20,7 +20,7 @@ class RealTimeFormContainer extends React.Component {
           {
             "Name": "AGV001",
             "IP": "10.5.87.10",
-            "Location": "00-001-002",
+            "Location": "00-002-001",
             "Firmware": "0.0.0.1",
             "Status": "Idle",
             "Face": "Up",
