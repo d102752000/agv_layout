@@ -11,7 +11,7 @@ class ListAgvInfoContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socket: io('http://192.168.1.132:5002'),
+      socket: io('http://192.168.1.49:5002'),
       realtimeData: {
         "AGV": [
           {

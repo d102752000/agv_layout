@@ -20,8 +20,6 @@ const routerSet = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact component={LoginFormContainer}/>
-        <Route path="/admin" exact component={HomepageContainer}/>
         <Route path="/status" component={ListAgvInfoContainer} exact />
         <Route path="/realtime" component={RealTimeFormContainer} exact />
       </Switch>
@@ -36,3 +34,6 @@ ReactDOM.render(
 );
 
 registerServiceWorker();
+  // 
+  // <Route path="/" exact component={LoginFormContainer}/>
+  // <Route path="/admin" exact component={HomepageContainer}/>

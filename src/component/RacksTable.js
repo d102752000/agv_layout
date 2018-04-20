@@ -36,8 +36,10 @@ class RacksTable extends React.Component {
         columns={columns}
         dataSource={itemInfo}
         pagination={false}
+        height={400}
+        bordered={true}
         scroll={{ y : '37vh' }}
-        size="middle"
+        size="small"
       />
     );
   }

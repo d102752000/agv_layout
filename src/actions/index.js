@@ -7,7 +7,8 @@ import _ from 'lodash';
 const serverConfig = {
   // url: 'http://lmsr178.calcomp.co.th:5001/apis',
   // url: 'http://127.0.0.1:5001/apis',
-  url: 'http://192.168.1.132:5001/apis',
+  // url: 'http://192.168.1.132:5001/apis',
+  url: 'http://192.168.1.49:5001/apis',
 };
 //exhibitionadmin
 const checkStatus = (response) => {
