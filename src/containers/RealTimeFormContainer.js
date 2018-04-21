@@ -8,7 +8,7 @@ import AgvMap from './../component/AgvMap';
 import RacksTable from './../component/RacksTable';
 
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+// const TabPane = Tabs.TabPane;
 
 class RealTimeFormContainer extends React.Component {
   constructor(props) {
@@ -181,22 +181,22 @@ class RealTimeFormContainer extends React.Component {
       realTimeStatic: {},
     }
     this.combineSocketToState = this.combineSocketToState.bind(this);
-    this.combineSocketStaticsToState = this.combineSocketStaticsToState.bind(this);
+    // this.combineSocketStaticsToState = this.combineSocketStaticsToState.bind(this);
   }
   componentDidMount() {
     const { doLoginRequest, } = this.props;
     doLoginRequest({userName: "exhibitionadmin", userPassword: "exhibitionadmin"});
     this.state.socket.on('realtime', this.combineSocketToState);
-    this.state.socket.on('wareHouseStatus', this.combineSocketStaticsToState);
+    // this.state.socket.on('wareHouseStatus', this.combineSocketStaticsToState);
   }
   combineSocketToState = (value) => {
     this.setState({ realtimeData: value });
   }
-  combineSocketStaticsToState = (value) => {
-    const side = this.props.match.params.side;
-    if (side === 'left') { this.setState({ realTimeStatic: value.materialsWareHouse }); }
-    else if (side === 'right') { this.setState({ realTimeStatic: value.itemsWareHouse }); }
-  }
+  // combineSocketStaticsToState = (value) => {
+  //   const side = this.props.match.params.side;
+  //   if (side === 'left') { this.setState({ realTimeStatic: value.materialsWareHouse }); }
+  //   else if (side === 'right') { this.setState({ realTimeStatic: value.itemsWareHouse }); }
+  // }
 
   render() {
     const { realtimeData } = this.state;

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Layout, Col, Row, Avatar, List, Card, Progress  } from 'antd';
 import io from 'socket.io-client';
+import _ from 'lodash';
 
 
 import Slider from 'react-slick'
 import ReactSpeedometer from "react-d3-speedometer";
 const { Content } = Layout;
+
 
 class ListAgvInfoContainer extends React.Component {
   constructor(props) {
@@ -84,35 +86,32 @@ class ListAgvInfoContainer extends React.Component {
       realTimeStatic: {},
     }
     this.combineSocketToState = this.combineSocketToState.bind(this);
-    this.combineSocketStaticsToState = this.combineSocketStaticsToState.bind(this);
+    // this.combineSocketStaticsToState = this.combineSocketStaticsToState.bind(this);
 
   }
   componentDidMount() {
     this.state.socket.on('realtime', this.combineSocketToState);
-    this.state.socket.on('wareHouseStatus', this.combineSocketStaticsToState);
+    // this.state.socket.on('wareHouseStatus', this.combineSocketStaticsToState);
   }
   combineSocketToState = (value) => {
     // console.log(value);
     this.setState({ realtimeData: value });
   }
-  combineSocketStaticsToState = (value) => {
-    console.log(value);
-    const side = this.props.match.params.side;
-    if (side === 'left') { this.setState({ realTimeStatic: value.materialsWareHouse }); }
-    else if (side === 'right') { this.setState({ realTimeStatic: value.itemsWareHouse }); }
-  }
+  // combineSocketStaticsToState = (value) => {
+  //   console.log(value);
+  //   const side = this.props.match.params.side;
+  //   if (side === 'left') { this.setState({ realTimeStatic: value.materialsWareHouse }); }
+  //   else if (side === 'right') { this.setState({ realTimeStatic: value.itemsWareHouse }); }
+  // }
   render() {
     const { realtimeData } = this.state;
-    console.log(realtimeData.AGV);
     const settings = {
-      className: "center",
-      centerMode: true,
+      dots: true,
       infinite: true,
-      centerPadding: "60px",
-      slidesToShow: 3,
-      speed: 500,
-      rows: 2,
-      slidesPerRow: 2
+      slidesToShow: _.size(realtimeData.AGV) === 3 ? 3  : _.size(realtimeData.AGV),
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
     };
     return (
       <Layout id="homepage-container">
@@ -120,14 +119,12 @@ class ListAgvInfoContainer extends React.Component {
           <Layout style={{ padding: '24px 24px 24px' }}>
             <Content className="content">
               <Row>
-                <Col span={24}>
-                  <List
-                    grid={{ gutter: 16, column: 4 }}
-                    dataSource={realtimeData.AGV}
-                    renderItem={item => (
-                      <Slider {...settings}>
-                      <div>
-                      <List.Item>
+                <Col>
+                  <div>
+                    <Slider {...settings}>
+                    {
+                      _.map(realtimeData.AGV, (item) => {
+                        return <div>
                         <Card
                         title={item.Name}
                         >
@@ -148,8 +145,6 @@ class ListAgvInfoContainer extends React.Component {
                           </div>
                           Speed:
                           <ReactSpeedometer
-                              height={200}
-                              maxValue={220}
                               value={Number(item.Speed)}
                               needleColor="black"
                               startColor="green"
@@ -158,11 +153,11 @@ class ListAgvInfoContainer extends React.Component {
                               needleTransition="easeElastic"
                             />
                         </Card>
-                      </List.Item>
-                      </div>
-                      </Slider>
-                    )}
-                  />
+                        </div>
+                      })
+                    }
+                    </Slider>
+                  </div>
                 </Col>
               </Row>
             </Content>
