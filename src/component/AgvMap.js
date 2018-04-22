@@ -101,9 +101,9 @@ class AgvMap extends React.Component {
     _.map(agvData.AGV, (value) => {
         agvdata.push(value.Location);
       });
-    console.log(_.difference(tabledata, agvdata));
-    console.log(_.difference(agvdata, _.difference(tabledata, agvdata)));
-    console.log(_.difference(agvdata, _.difference(tabledata, _.difference(tabledata, agvdata))));
+    // console.log(_.difference(tabledata, agvdata));
+    // console.log(_.difference(agvdata, _.difference(tabledata, agvdata)));
+    // console.log(_.difference(agvdata, _.difference(tabledata, _.difference(tabledata, agvdata))));
 
     _.map(_.difference(tabledata, agvdata), (value) => {
       const rackLocation = value.split('-'); // block-x-y

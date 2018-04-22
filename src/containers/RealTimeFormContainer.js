@@ -202,7 +202,7 @@ class RealTimeFormContainer extends React.Component {
     const { realtimeData } = this.state;
     const { userInfo } = this.props;
     // different card one and three at left monitor or right monitor
-    console.log(realtimeData);
+    // console.log(realtimeData);
     return (
       <Layout id="chartForm-container">
         <Layout>

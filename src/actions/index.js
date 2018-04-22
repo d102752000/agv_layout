@@ -278,7 +278,7 @@ export const doListItemRequest = (passProps) => {
     .then(checkStatus)
     .then(parseJSON)
     .then((data) => {
-      // console.log(data.racks);
+      console.log(data.racks);
     for(let i = 0; i<_.size(data.racks); i++) {
       for(let j = 0; j< _.size(data.racks[i].items); j++) {
         _.map(data.racks[i].items[j].positions, (value) => {
