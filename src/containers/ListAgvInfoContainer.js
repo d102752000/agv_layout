@@ -106,12 +106,12 @@ class ListAgvInfoContainer extends React.Component {
   render() {
     const { realtimeData } = this.state;
     const settings = {
-      dots: true,
+      dots: false,
       infinite: true,
-      slidesToShow: _.size(realtimeData.AGV) === 3 ? 3  : _.size(realtimeData.AGV),
+      slidesToShow: 5,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 2000,
+      autoplaySpeed: 3000,
     };
     return (
       <Layout id="homepage-container">

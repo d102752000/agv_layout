@@ -220,7 +220,6 @@ class RealTimeFormContainer extends React.Component {
                   </Card>
                 </Col>
                 <Col span={24}>
-                  <Card>
                     {
                       userInfo ?
                       <RacksTable
@@ -229,7 +228,6 @@ class RealTimeFormContainer extends React.Component {
                         accessToken={null}
                       />
                     }
-                  </Card>
                 </Col>
               </Row>
             </Content>
